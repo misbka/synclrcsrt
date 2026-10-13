@@ -135,6 +135,4 @@ O servidor escuta apenas em `127.0.0.1` (local).
   e/ou o deslocamento global de legendas na etapa 4.
 - **Porta 8765 ocupada** — o app sobe automaticamente nas 20 portas seguintes.
 
-## Licença
 
-Sem licença definida até o momento — adicione um arquivo `LICENSE` se for publicar no GitHub.
