@@ -1,17 +1,14 @@
-# Letra em Vídeo
+# Lyrics to Video
 
-**Áudio + letra → `.lrc` → `.srt` → `.ass` animado → vídeo `.mp4`**
+**Audio + lyrics → `.lrc` → `.srt` → animated `.ass` → `.mp4` video**
 
-Aplicação local (sem instalação, sem dependências de pip) que transforma uma música e a letra
-em um vídeo com legendas sincronizadas e animadas. Tudo roda no seu computador: um servidor
-Python de arquivos simples serve a interface, e o **ffmpeg** faz a renderização final.
+A local application (no installation, no pip dependencies) that turns a song and its lyrics into a video with synchronized, animated subtitles. Everything runs on your computer: a lightweight Python file server serves the interface, and **FFmpeg** handles the final rendering.
 
-Feita apenas com a **biblioteca padrão do Python (3.8+)** e um `index.html` único
-(HTML + CSS + JS, sem build, sem frameworks).
+Built entirely with the **Python standard library (3.8+)** and a single `index.html` file (HTML + CSS + JS, no build process, no frameworks).
 
 ---
 
-## Como rodar
+## Getting Started
 
 **Windows**
 
@@ -23,116 +20,105 @@ iniciar.bat
 
 ```sh
 sh iniciar.sh
-# ou
+# or
 python3 app.py
 ```
 
-O servidor sobe em `http://127.0.0.1:8765/` (porta avança automaticamente se estiver ocupada)
-e abre o navegador sozinho. **Feche a janela do terminal para encerrar.**
+The server starts at `http://127.0.0.1:8765/` (automatically moves to the next available port if occupied) and opens your browser automatically.
 
-### Requisitos
+**Close the terminal window to shut down the application.**
 
-| O que | Onde |
+### Requirements
+
+| Requirement | Where to get it |
 |---|---|
-| Python 3.8 ou superior | [python.org](https://www.python.org/downloads/) |
-| `ffmpeg` (+ `ffprobe`) | pasta `ffmpeg/` do projeto — já vem com os binários para Windows; em Linux/macOS, coloque o binário em `ffmpeg/` ou instale no sistema |
+| Python 3.8 or later | [python.org](https://www.python.org/downloads/) |
+| `ffmpeg` (+ `ffprobe`) | Project's `ffmpeg/` folder — Windows binaries are already included; on Linux/macOS, place the binaries in `ffmpeg/` or install them system-wide |
 
-> O app procura o ffmpeg em `ffmpeg/`, `ffmpeg/bin/` e, por último, no `PATH`.
-> Sem ele, a interface abre, mas a geração do vídeo falha.
+> The app looks for FFmpeg in `ffmpeg/`, `ffmpeg/bin/`, and finally in the system `PATH`.
+> Without it, the interface will open, but video generation will fail.
 
 ---
 
-## O fluxo em 4 etapas
+## The 4-Step Workflow
 
-A interface tem uma barra lateral com as etapas 1 → 4:
+The interface features a sidebar with steps 1 → 4:
 
-1. **Áudio e letra** — escolha (ou arraste) o arquivo de áudio e cole a letra,
-   **um verso por linha**. Linhas em branco são ignoradas. Também dá para importar
-   um `.lrc` existente. O vídeo final recebe o mesmo nome do áudio.
-2. **Sincronizar** — toque o áudio e marque cada linha no instante certo.
-   Um botão grande + atalhos de teclado marcam os tempos; a *compensação de reação*
-   (padrão 150 ms) corrige o atraso do seu clique. Dá para voltar linha, ajustar o
-   tempo manualmente, mexer na lista linha a linha e zerar as marcações.
-3. **Estilo e fundo** — fonte (as da pasta `fontes/` aparecem na lista, com prévia),
-   tamanho, cores, contorno, negrito, posição (topo/centro/base), margem, animações de
-   entrada e saída (fade, subir, descer, zoom, pop) com duração em ms, fundo sólido ou
-   imagem (preencher/caber inteira), resolução e prévia ao vivo que responde ao play do áudio.
-4. **Gerar vídeo** — revê/edita o `.LRC`, baixa `.lrc` e `.srt`, ajusta duração máxima
-   por linha, deslocamento global das legendas e FPS (24/30/60), e gera o `.mp4`
-   com barra de progresso, log, botão de cancelar e atalho para abrir a pasta de saída.
+1. **Audio & Lyrics** — Select (or drag and drop) an audio file and paste the lyrics, **one line per verse line**. Empty lines are ignored. You can also import an existing `.lrc` file. The final video uses the same filename as the audio file.
 
-### Atalhos do teclado (etapa 2)
+2. **Synchronize** — Play the audio and mark each line at the exact moment it should appear. A large button and keyboard shortcuts let you set timestamps. The *reaction compensation* setting (150 ms by default) corrects for the delay between hearing the lyrics and clicking. You can go back one line, manually adjust timestamps, edit individual lines, and reset all markers.
 
-| Tecla | Ação |
+3. **Style & Background** — Choose the font (fonts from the `fonts/` folder appear in the list, with a preview), size, colors, outline, bold formatting, position (top/middle/bottom), margins, entrance and exit animations (fade, slide up, slide down, zoom, pop) with durations in milliseconds. Choose a solid-color or image background (fill/fit), resolution, and a live preview that follows audio playback.
+
+4. **Generate Video** — Review/edit the `.LRC`, download `.lrc` and `.srt` files, adjust the maximum duration per line, global subtitle offset, and FPS (24/30/60). Generate the `.mp4` with a progress bar, log output, cancel button, and a shortcut to open the output folder.
+
+### Keyboard Shortcuts (Step 2)
+
+| Key | Action |
 |---|---|
-| <kbd>Espaço</kbd> | marcar linha |
-| <kbd>B</kbd> | voltar uma linha |
-| <kbd>K</kbd> | tocar / pausar |
-| <kbd>J</kbd> | −5 s |
-| <kbd>L</kbd> | +5 s |
+| <kbd>Space</kbd> | Mark current line |
+| <kbd>B</kbd> | Go back one line |
+| <kbd>K</kbd> | Play / Pause |
+| <kbd>J</kbd> | −5 seconds |
+| <kbd>L</kbd> | +5 seconds |
 
-O player fixo no rodapé tem play, ±5 s, barra de progresso e velocidade (0,5× a 1,25×).
+The fixed bottom player includes play, ±5-second controls, a progress bar, and playback speed adjustment (0.5× to 1.25×).
 
 ---
 
-## Estrutura de pastas
+## Folder Structure
 
-```
+```text
 lrc_srt2/
-├── app.py          # servidor HTTP + pipeline de renderização (stdlib only)
-├── index.html      # interface inteira (HTML/CSS/JS)
-├── iniciar.bat     # Windows
-├── iniciar.sh      # Linux/macOS
-├── ffmpeg/         # binários do ffmpeg
-├── fontes/         # (opcional) .ttf/.otf próprios, usados na prévia e no vídeo
-├── temp/           # uploads e arquivos temporários (limpo a cada início)
-└── vídeos/         # resultado: <nome do áudio>.mp4 + .lrc + .srt
+├── app.py          # HTTP server + rendering pipeline (stdlib only)
+├── index.html      # Complete interface (HTML/CSS/JS)
+├── iniciar.bat     # Windows launcher
+├── iniciar.sh     # Linux/macOS launcher
+├── ffmpeg/         # FFmpeg binaries
+├── fonts/          # (optional) Custom .ttf/.otf fonts used in preview and video
+├── temp/           # Uploads and temporary files (cleared on every startup)
+└── videos/         # Output: <audio filename>.mp4 + .lrc + .srt
 ```
 
 ---
 
-## Como funciona por dentro
+## How It Works Internally
 
-1. O áudio enviado é convertido para **WAV PCM 48 kHz** e é *esse* arquivo que o
-   navegador toca e que o ffmpeg usa — assim o tempo marcado na sincronização é idêntico
-   ao do vídeo (MP3 VBR e atraso de encoder fariam navegador e ffmpeg divergirem).
-2. As marcações viram `.lrc`; o `.lrc` é transformado em `.srt`
-   (respeitando a duração máxima de cada linha).
-3. O `.srt` vira um `.ass` animado: cada linha é dividida em segmentos de
-   *entrada* → *estático* → *saída*, com tags `\fad`, `\move`, `\fscx/\fscy` etc.
-   Os tamanhos são escalados a partir de uma referência 1080p, então a fonte renderiza
-   igual em 480p, 720p, 1080p, vertical ou quadrado.
-4. O ffmpeg grava o vídeo com `libx264` (CRF 20) + áudio AAC 192k,
-   `+faststart`, sobre cor sólida ou imagem de fundo, com as fontes da pasta `fontes/`.
+1. The uploaded audio is converted to **WAV PCM 48 kHz**. This exact file is played by the browser and used by FFmpeg, ensuring that synchronization timestamps match the final video precisely (MP3 VBR and encoder delay could otherwise cause timing differences between the browser and FFmpeg).
+
+2. The timestamps are saved as `.lrc`; the `.lrc` file is then converted to `.srt`, respecting the maximum duration configured for each line.
+
+3. The `.srt` file is converted into an animated `.ass` file. Each line is divided into *entrance* → *static* → *exit* segments, using tags such as `\fad`, `\move`, `\fscx/\fscy`, etc.
+
+   Font sizes are scaled from a 1080p reference, ensuring consistent rendering at 480p, 720p, 1080p, vertical, or square resolutions.
+
+4. FFmpeg renders the video using `libx264` (CRF 20) + AAC audio (192 kbps), `+faststart`, over a solid-color or image background, using fonts from the `fonts/` folder.
 
 ---
 
-## API local
+## Local API
 
-Útil para automatizar ou integrar:
+Useful for automation and integration:
 
-| Método | Rota | Descrição |
+| Method | Endpoint | Description |
 |---|---|---|
-| GET | `/` | a interface |
-| GET | `/api/info` | caminho e versão do ffmpeg, pasta de saída |
-| GET | `/api/fonts` | fontes da pasta `fontes/` |
-| GET | `/api/job?id=` | estado de um job (`running`, `done`, `error`, `cancelled`) |
-| POST | `/api/upload?kind=audio&name=` | envia áudio (convertido para WAV) ou imagem |
-| POST | `/api/render` | inicia a renderização (JSON: áudio, lrc/srt, estilo, fundo, resolução, fps) |
-| POST | `/api/cancel` | cancela o job em andamento |
-| POST | `/api/open-folder` | abre a pasta `vídeos/` no explorador |
+| GET | `/` | Main interface |
+| GET | `/api/info` | FFmpeg path and version, output folder |
+| GET | `/api/fonts` | Available fonts from the `fonts/` folder |
+| GET | `/api/job?id=` | Job status (`running`, `done`, `error`, `cancelled`) |
+| POST | `/api/upload?kind=audio&name=` | Uploads audio (converted to WAV) or an image |
+| POST | `/api/render` | Starts rendering (JSON: audio, lrc/srt, style, background, resolution, fps) |
+| POST | `/api/cancel` | Cancels the current job |
+| POST | `/api/open-folder` | Opens the `videos/` folder in the file explorer |
 
-O servidor escuta apenas em `127.0.0.1` (local).
+The server listens exclusively on `127.0.0.1` (localhost).
 
 ---
 
-## Solução de problemas
+## Troubleshooting
 
-- **“ffmpeg não encontrado”** — coloque `ffmpeg` (+ `ffprobe`) em `ffmpeg/` ou no `PATH`.
-- **“Nenhuma legenda para gravar”** — sincronize ao menos uma linha na etapa 2.
-- **Áudio “não está mais no servidor”** — o `temp/` é limpo a cada início; selecione o arquivo de novo.
-- **Letra no vídeo “atrasada/adiantada”** — use a *compensação de reação* na etapa 2
-  e/ou o deslocamento global de legendas na etapa 4.
-- **Porta 8765 ocupada** — o app sobe automaticamente nas 20 portas seguintes.
-
-
+- **"FFmpeg not found"** — Place `ffmpeg` (+ `ffprobe`) in the `ffmpeg/` folder or add them to your system `PATH`.
+- **"No subtitles to render"** — Synchronize at least one line in Step 2.
+- **Audio "no longer available on the server"** — The `temp/` folder is cleared on every startup. Select the audio file again.
+- **Lyrics appear "out of sync" (too early/too late)** — Adjust the *reaction compensation* in Step 2 and/or the global subtitle offset in Step 4.
+- **Port 8765 is already in use** — The app automatically tries the next 20 ports.
